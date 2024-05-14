@@ -8,6 +8,6 @@ services:
             - 1194:1194/udp
             - 18080:8080/tcp
         volumes:
-            - /var/vpn/data:/opt/Dockovpn_data
+            - /srv/vpn/data:/opt/Dockovpn_data
         container_name: dockovpn
         image: makertim/dockovpn
