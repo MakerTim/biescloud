@@ -7,7 +7,7 @@ cd /srv
 git clone https://github.com/MakerTim/biescloud
 
 touch /srv/files/.env
-echo HTA_MAR=$($(tr -dc A-Za-z0-9 </dev/urandom | head -c 13)) >> /srv/files/.env
+echo HTA_MAR=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13) >> /srv/files/.env
 echo HTA_TIM=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13) >> /srv/files/.env
 echo HTA_LOT=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13) >> /srv/files/.env
 echo HTA_RUR=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13) >> /srv/files/.env
