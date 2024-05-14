@@ -7,11 +7,10 @@ cd /srv
 git clone https://github.com/MakerTim/biescloud
 
 touch /srv/files/.env
-# replace ... for passwords
-echo HTA_MAR=... >> /srv/files/.env
-echo HTA_TIM=... >> /srv/files/.env
-echo HTA_LOT=... >> /srv/files/.env
-echo HTA_RUR=... >> /srv/files/.env
+echo HTA_MAR=$($(tr -dc A-Za-z0-9 </dev/urandom | head -c 13)) >> /srv/files/.env
+echo HTA_TIM=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13) >> /srv/files/.env
+echo HTA_LOT=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13) >> /srv/files/.env
+echo HTA_RUR=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13) >> /srv/files/.env
 sed -n '/^HTA_MAR/s/.*=//p' /srv/files/.env | openssl passwd -apr1 -stdin > /srv/files/.htpasswd-margret
 sed -n '/^HTA_TIM/s/.*=//p' /srv/files/.env | openssl passwd -apr1 -stdin > /srv/files/.htpasswd-tim
 sed -n '/^HTA_LOT/s/.*=//p' /srv/files/.env | openssl passwd -apr1 -stdin > /srv/files/.htpasswd-lotte
