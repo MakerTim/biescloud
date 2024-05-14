@@ -1,0 +1,63 @@
+name: file
+
+services:
+  samba:
+    container_name: samba
+    image: dperson/samba
+    ports:
+      - 139:139
+      - 445:445
+      - 137:137/udp
+      - 138:138/udp
+    environment:
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /srv/files/data/:/srv/
+    command: -n
+      -p
+      -u "lotte;${HTA_LOT};100004"
+      -u "margret;${HTA_MAR};10002"
+      -u "rurik;${HTA_RUR};10001"
+      -u "tim;${HTA_TIM};10003"
+      -s "share;/srv/share;yes;no;no;lotte,margret,rurik,tim"
+      -s "lotte;/srv/lotte;yes;no;no;lotte"
+      -s "margret;/srv/margret;yes;no;no;margret"
+      -s "rurik;/srv/rurik;yes;no;no;rurik"
+      -s "tim;/srv/tim;yes;no;no;tim"
+  web:
+    container_name: web
+    image: nginx:alpine-slim
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /srv/files/data/:/usr/share/nginx/html:ro
+      - /srv/files/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /srv/files/.htpasswd-tim:/usr/share/nginx/.htpasswd-tim:ro
+      - /srv/files/.htpasswd-lotte:/usr/share/nginx/.htpasswd-lotte:ro
+      - /srv/files/.htpasswd-margret:/usr/share/nginx/.htpasswd-margret:ro
+      - /srv/files/.htpasswd-rurik:/usr/share/nginx/.htpasswd-rurik:ro
+      - /srv/files/.htpasswd-share:/usr/share/nginx/.htpasswd-share:ro
+      - /srv/files/certbot/letsencrypt/:/etc/letsencrypt/:ro
+      - /srv/files/certbot/www:/usr/share/nginx/certbot/:ro
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:latest
+    volumes:
+      - /srv/files/certbot/letsencrypt:/etc/letsencrypt
+      - /srv/files/certbot/www:/srv/www
+    command: certonly
+      --webroot
+      --agree-tos
+      --renew-by-default
+      --preferred-challenges http-01
+      --text
+      --email makertim@outlook.com
+      -w /srv/www
+      -d h3.makertim.nl,biescloud.makertim.nl,paroba.makertim.nl
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 720h #30d
+    depends_on:
+      - web
