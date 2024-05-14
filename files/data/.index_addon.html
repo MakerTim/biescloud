@@ -1,0 +1,151 @@
+<style>
+  body {
+    background-color: #111;
+  }
+
+  h1 {
+    color: #cbe58e;
+    text-align: center;
+  }
+
+  hr {
+    border: 1px solid #013026;
+  }
+
+  pre+hr {
+    border: 1px solid #014760;
+  }
+
+  /*#013026
+#014760
+#107e57
+#a1ce3f
+#cbe58e*/
+
+  pre {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  div {
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 2.5rem;
+    background-image: radial-gradient(circle, #014760, #004252, #003d43, #003734, #013026);
+    display: inline-flex;
+    width: calc(25vw - 4rem);
+    height: calc(25vw - 4rem);
+    flex-wrap: wrap;
+    overflow: hidden;
+
+    &:nth-child(2n) {
+      background-image: radial-gradient(circle, #013026, #003734, #003d43, #004252, #014760);
+    }
+  }
+
+  a {
+    color: #cbe58e;
+    font-family: 'ubuntu' sans-serif;
+    font-size: 1.2rem;
+    width: calc(100% - 2rem);
+    text-wrap: pretty;
+    text-align: center;
+
+    &[href$="/"] {
+      color: #a1ce3f;
+      font-size: 2rem;
+
+      &+span {
+        display: none;
+      }
+
+      &::before {
+        line-height: 1;
+        margin-right: 0.75rem;
+        height: 0.9em;
+        width: 1em;
+        content: '';
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" ><path fill="%23cbe58e" d="M384 480h48c11 0 22-6 28-16l112-192a32 32 0 0 0-28-48H144c-11 0-22 6-28 16L48 357V96c0-9 7-16 16-16h118c4 0 8 2 11 5l26 26c21 21 50 33 80 33h117c9 0 16 7 16 16v32h48v-32c0-35-29-64-64-64H299c-17 0-34-7-46-19l-26-26a64 64 0 0 0-46-19H64C29 32 0 61 0 96v320c0 35 29 64 64 64h320z"/></svg>');
+        display: inline-block;
+      }
+      &:hover {
+      color: #107e57;
+        &::before {
+          background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" ><path fill="%23107e57" d="M384 480h48c11 0 22-6 28-16l112-192a32 32 0 0 0-28-48H144c-11 0-22 6-28 16L48 357V96c0-9 7-16 16-16h118c4 0 8 2 11 5l26 26c21 21 50 33 80 33h117c9 0 16 7 16 16v32h48v-32c0-35-29-64-64-64H299c-17 0-34-7-46-19l-26-26a64 64 0 0 0-46-19H64C29 32 0 61 0 96v320c0 35 29 64 64 64h320z"/></svg>');
+        }
+      }
+    }
+
+    &:hover {
+      color: #107e57;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+</style>
+<script>
+  const header = document.getElementsByTagName('h1')[0];
+  document.title = header.innerText = header.innerText.replace('Index of /', '');
+
+  const linkWrapper = document.getElementsByTagName('pre')[0];
+  const newWrapper = document.createElement('pre');
+  const links = linkWrapper.childNodes;
+
+  const imgObserver = new IntersectionObserver(
+    intersectionObserverEntry => {
+      intersectionObserverEntry.forEach(entry => {
+        const img = entry.target.querySelector('img');
+        if (entry.intersectionRatio === 0) {
+          img.removeAttribute('src');
+          img.style.display = 'none';
+        } else if (entry.intersectionRatio === 1) {
+          img.src = img.dataset.src;
+          img.style.display = 'unset';
+        }
+      });
+    },
+    { threshold: [0, 1], }
+  );
+
+  for (let i = 0; i < links.length; i += 2) {
+    const wrapper = document.createElement('div');
+    const newLink = document.createElement('a');
+    const meta = document.createElement('span');
+    newLink.href = links[i].href;
+    newLink.innerText = links[i].innerText;
+    meta.innerText = links[i + 1].textContent.replaceAll(/(^\s+)|((\s|-)+$)/g, '');
+
+    wrapper.appendChild(newLink);
+    if (newLink.href.toLowerCase().match(/\.(jpg|png|jpeg|bmp)/)) {
+      const img = document.createElement('img')
+      img.dataset.src = newLink.href;
+      img.loading = 'eager';
+      img.style.display = 'none';
+      wrapper.appendChild(img);
+
+      imgObserver.observe(wrapper);
+    }
+
+    wrapper.appendChild(meta);
+    newWrapper.appendChild(wrapper);
+  }
+  linkWrapper.parentElement.insertBefore(newWrapper, linkWrapper);
+  linkWrapper.remove();
+</script>
