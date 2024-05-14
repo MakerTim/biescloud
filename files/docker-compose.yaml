@@ -46,6 +46,8 @@ services:
     volumes:
       - /srv/files/certbot/letsencrypt:/etc/letsencrypt
       - /srv/files/certbot/www:/srv/www
+      - /srv/files/certbot.sh:/opt/certbot/certbot.sh:ro
+    entrypoint: /opt/certbot/certbot.sh
     command: certonly
       --webroot
       --agree-tos
