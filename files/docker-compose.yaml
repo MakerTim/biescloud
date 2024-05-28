@@ -27,9 +27,6 @@ services:
   web:
     container_name: web
     image: nginx:alpine-slim
-    ports:
-      - 80:80
-      - 443:443
     volumes:
       - /srv/files/data/:/usr/share/nginx/html:ro
       - /srv/files/nginx.conf:/etc/nginx/conf.d/default.conf:ro
@@ -40,26 +37,8 @@ services:
       - /srv/files/.htpasswd-share:/usr/share/nginx/.htpasswd-share:ro
       - /srv/files/certbot/letsencrypt/:/etc/letsencrypt/:ro
       - /srv/files/certbot/www:/usr/share/nginx/certbot/:ro
-  certbot:
-    container_name: certbot
-    image: certbot/certbot:latest
-    volumes:
-      - /srv/files/certbot/letsencrypt:/etc/letsencrypt
-      - /srv/files/certbot/www:/srv/www
-      - /srv/files/certbot.sh:/opt/certbot/certbot.sh:ro
-    entrypoint: /opt/certbot/certbot.sh
-    command: certonly
-      --webroot
-      --agree-tos
-      --renew-by-default
-      --preferred-challenges http-01
-      --text
-      --email makertim@outlook.com
-      -w /srv/www
-      -d h3.makertim.nl,biescloud.makertim.nl,paroba.makertim.nl
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 720h #30d
-    depends_on:
-      - web
+
+networks:
+  default:
+    external: true
+    name: scoobydoo

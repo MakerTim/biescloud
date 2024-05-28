@@ -1,0 +1,46 @@
+name: web
+
+secrets:
+  DB_ROOT_PWD:
+    file: ./host/.secrets/db_root_pwd.txt
+  MYSQL_PWD:
+    file: ./host/.secrets/mysql_pwd.txt
+
+services:
+  ingress:
+    container_name: ingress
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    environment:
+      PUID: 1000
+      PGID: 1000
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./host/data:/data
+      - ./host/letsencrypt:/etc/letsencrypt
+  db:
+    container_name: db
+    image: jc21/mariadb-aria
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD__FILE: /run/secrets/DB_ROOT_PWD
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'db'
+      MYSQL_PASSWORD__FILE: /run/secrets/MYSQL_PWD
+      MARIADB_AUTO_UPGRADE: '1'
+    volumes:
+      - ./mysql:/var/lib/mysql
+    secrets:
+      - DB_ROOT_PWD
+      - MYSQL_PWD
+    ports:
+      - '3306:3306'
+
+networks:
+  default:
+    external: true
+    name: scoobydoo
+  

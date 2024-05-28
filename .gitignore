@@ -6,3 +6,7 @@
 /files/certbot
 
 /vpn/data
+
+/webs/host/data
+/webs/host/letsencrypt
+/webs/mysql
