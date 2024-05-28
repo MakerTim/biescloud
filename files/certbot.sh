@@ -2,4 +2,4 @@
 
 certbot "$@" ;
 echo 'SLEEP' ;
-sleep 21600 ;
+sleep 604800 ;
