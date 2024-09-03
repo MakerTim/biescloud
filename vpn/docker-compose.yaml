@@ -1,13 +1,14 @@
 name: vpn
 
 services:
-    openvpn:
-        cap_add:
-            - NET_ADMIN
-        ports:
-            - 1194:1194/udp
-            - 18080:8080/tcp
-        volumes:
-            - /srv/vpn/data:/opt/Dockovpn_data
-        container_name: dockovpn
-        image: makertim/dockovpn
+  openvpn:
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 1194:1194/udp
+      - 18080:8080/tcp
+    volumes:
+      - /srv/vpn/data:/opt/Dockovpn_data
+    container_name: dockovpn
+    image: makertim/dockovpn
+    restart: unless-stopped

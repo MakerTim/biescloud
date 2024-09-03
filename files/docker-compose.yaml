@@ -24,6 +24,7 @@ services:
       -s "margret;/srv/margret;yes;no;no;margret"
       -s "rurik;/srv/rurik;yes;no;no;rurik"
       -s "tim;/srv/tim;yes;no;no;tim"
+    restart: unless-stopped
   web:
     container_name: web
     image: nginx:alpine-slim
@@ -37,6 +38,7 @@ services:
       - /srv/files/.htpasswd-share:/usr/share/nginx/.htpasswd-share:ro
       - /srv/files/certbot/letsencrypt/:/etc/letsencrypt/:ro
       - /srv/files/certbot/www:/usr/share/nginx/certbot/:ro
+    restart: unless-stopped
 
 networks:
   default:
